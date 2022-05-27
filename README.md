@@ -21,3 +21,8 @@ It is ok to change any code as long as the CuisinesRegistry interface remains un
 + Put the write up mentioned in point 4. into the end of this file.
 + Share the project with gitlab user *quandoo_recruitment_task* (go to `Settings -> Members -> Invite member`, find the user in `Select members to invite` and set `Choose a role permission` to `Developer`)
 + Send us an **ssh** clone link to the repository.
+
+## Scalability proposals:
++ If the requirement is to keep using in-memory I would try to optimize the HashMultimap with a custom builder and then if needed change the data structure to improve the use of the multi-thread environment
++ for the amount of data an in-memory db like Hazelcast or SwayDB is needed, taking advantage of the specific features each solution offers and adapts to the use case. and of course implementing a Backup.
++ then depending on the writing/reading frequency and if the db is not enough a caching or indexing strategy can support
