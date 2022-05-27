@@ -1,67 +1,82 @@
 package de.quandoo.recruitment.registry;
-
+import com.google.common.collect.*;
 import de.quandoo.recruitment.registry.api.CuisinesRegistry;
 import de.quandoo.recruitment.registry.model.Cuisine;
 import de.quandoo.recruitment.registry.model.Customer;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.*;
 
 public class InMemoryCuisinesRegistry implements CuisinesRegistry {
 
-    private List italianCuisineCustomers = new LinkedList();
-    private List frenchCuisineCustomers = new LinkedList();
-    private List germanCuisineCustomers = new LinkedList();
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryCuisinesRegistry.class);
+    private final Multimap<Cuisine, Customer> cuisineCustomerMultimap = Multimaps
+            .synchronizedSetMultimap(HashMultimap.create());
 
-    private String cuisineName;
-
+    /**
+     * This method register an Entry to the Multimap<Cuisine, Customer>:
+     * it is not necessary to populate empty collection before the pull()
+     * null values are accepted and handled in the get()
+     * as it is a synchronizedSetMultimap is thread-safe and skips duplicated
+     * @param customer Customer object to add
+     * @param cuisine  Cuisine object to add
+     */
     @Override
-    public void register(final Customer userId, final Cuisine cuisine) {
-        cuisineName = cuisine.getName();
-        if (cuisineName == "italian") {
-            italianCuisineCustomers.add(userId);
-        } else
-        {
-            if (cuisineName == "french") {
-                frenchCuisineCustomers.add(userId);
-            } else if (cuisine.getName() == "german") {
-                germanCuisineCustomers.add(userId);
-            }
+    public synchronized void register(final Customer customer, final Cuisine cuisine) {
+
+        cuisineCustomerMultimap.put(cuisine, customer);
         }
-        System.err.println("Unknown cuisine, please reach johny@bookthattable.de to update the code");
+
+    /**
+     * This method shows a list containing the customers associated with the cuisine passed:
+     * @param cuisine  Cuisine object to show associated customers
+     * @return the list of customers associated with a cuisine, empty [] if cuisine is null
+     */
+    @Override
+    public List<Customer> cuisineCustomers( final Cuisine cuisine) {
+
+        ImmutableList<Customer> customerList = ImmutableMultimap.copyOf(cuisineCustomerMultimap)
+                .get(cuisine)
+                .asList();
+
+        return customerList;
+
     }
 
-    @Override
-    public List<Customer> cuisineCustomers(final Cuisine cuisine) {
-        if (cuisineName == "italian") {
-            return italianCuisineCustomers;
-        } else
-        {
-            if (cuisineName == "french") {
-                return frenchCuisineCustomers;
-            } else if (cuisineName == "german") {
-                return germanCuisineCustomers;
-            }
-        }
-        return null;
-    }
-
+    /**
+     * This method shows a list containing the customers associated with the cuisine passed:
+     * @param customer  Customer object to show associated cuisines
+     * @return the list of cuisines associated with a customer, empty [] if customer is null
+     */
     @Override
     public List<Cuisine> customerCuisines(final Customer customer) {
-        if (italianCuisineCustomers.contains(customer)) {
-            return Arrays.asList(new Cuisine("italian"));
-        }
-        if (frenchCuisineCustomers.contains(customer)) {
-            return Arrays.asList(new Cuisine("french"));
-        }
-        if (germanCuisineCustomers.contains(customer)) {
-            return Arrays.asList(new Cuisine("german"));
-        }
-        return null;
+
+        ImmutableList<Cuisine> cuisineList= ImmutableMultimap.copyOf(cuisineCustomerMultimap)
+                .inverse()
+                .get(customer)
+                .asList();
+
+        return cuisineList;
     }
 
+    /**
+     * This method shows a list of the most popular (n) Cuisines:
+     * @param n  number of top cuisines to show
+     * @return the list of the mos popular cuisines
+     */
     @Override
     public List<Cuisine> topCuisines(final int n) {
-        throw new RuntimeException("Not implemented");
+        int inMemoryCuisineKeysListSize = cuisineCustomerMultimap.keySet().size();
+
+        System.out.println(cuisineCustomerMultimap.keySet().size());
+        if (n>0 && n<= inMemoryCuisineKeysListSize) {
+            ImmutableMultiset<Cuisine> cuisineList = Multisets.copyHighestCountFirst(cuisineCustomerMultimap.keys());
+
+            return cuisineList.elementSet().asList().subList(0,n);
+        }
+        logger.warn("invalid request trying to access topCuisines with n: {} for cuisines list size: {}",
+                n, inMemoryCuisineKeysListSize);
+        return Collections.emptyList();
     }
+
 }
