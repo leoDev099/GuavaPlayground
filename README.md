@@ -26,3 +26,4 @@ It is ok to change any code as long as the CuisinesRegistry interface remains un
 + If the requirement is to keep using in-memory I would try to optimize the HashMultimap with a custom builder and then if needed change the data structure to improve the use of the multi-thread environment
 + for the amount of data an in-memory db like Hazelcast or SwayDB is needed, taking advantage of the specific features each solution offers and adapts to the use case. and of course implementing a Backup.
 + then depending on the writing/reading frequency and if the db is not enough a caching or indexing strategy can support
++ then I would try to scale it horizontally and implement some event stream to keep data consistant
