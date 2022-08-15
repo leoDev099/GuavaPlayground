@@ -1,7 +1,8 @@
-package de.quandoo.recruitment.registry.api;
+package de.leonardo.guavaPlayground.registry.api;
 
-import de.quandoo.recruitment.registry.model.Cuisine;
-import de.quandoo.recruitment.registry.model.Customer;
+import de.leonardo.guavaPlayground.registry.model.Cuisine;
+import de.leonardo.guavaPlayground.registry.model.Customer;
+
 import java.util.List;
 
 public interface CuisinesRegistry {

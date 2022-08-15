@@ -1,8 +1,8 @@
-package de.quandoo.recruitment.registry;
+package de.leonardo.guavaPlayground.registry;
 
-import de.quandoo.recruitment.registry.api.CuisinesRegistry;
-import de.quandoo.recruitment.registry.model.Cuisine;
-import de.quandoo.recruitment.registry.model.Customer;
+import de.leonardo.guavaPlayground.registry.model.Cuisine;
+import de.leonardo.guavaPlayground.registry.api.CuisinesRegistry;
+import de.leonardo.guavaPlayground.registry.model.Customer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InMemoryCuisinesRegistryTest {
+public class CuisinesRegistryTest {
 
     private static final Cuisine FRENCH = new Cuisine("french");
     private static final Cuisine GERMAN = new Cuisine("german");
@@ -25,7 +25,7 @@ public class InMemoryCuisinesRegistryTest {
 
     @Before
     public void setUp(){
-        cuisinesRegistry = new InMemoryCuisinesRegistry();
+        cuisinesRegistry = new CuisiniesRegistry();
     }
 
     @Test
@@ -74,13 +74,6 @@ public class InMemoryCuisinesRegistryTest {
         assertThat(cuisineList).containsExactlyElementsOf(expectedCuisineList);
     }
 
-
-
-    /*  Some tests created during development, as the task states not to increase test coverage
-        will just leave then inside the comment block, but could be useful in the future
-    * */
-
-    /*
     @Test
     public void shouldShowAllCuisinesWhenCustomerFollowsMultipleCuisines() {
 
@@ -129,6 +122,5 @@ public class InMemoryCuisinesRegistryTest {
 
         assertThat(customerList).containsExactlyInAnyOrderElementsOf(expectedFrenchCustomerList);
     }
-    */
 
 }

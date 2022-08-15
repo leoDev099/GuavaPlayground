@@ -1,4 +1,4 @@
-package de.quandoo.recruitment.registry.model;
+package de.leonardo.guavaPlayground.registry.model;
 
 import java.util.Objects;
 

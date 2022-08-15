@@ -1,22 +1,22 @@
-package de.quandoo.recruitment.registry;
+package de.leonardo.guavaPlayground.registry;
 import com.google.common.collect.*;
-import de.quandoo.recruitment.registry.api.CuisinesRegistry;
-import de.quandoo.recruitment.registry.model.Cuisine;
-import de.quandoo.recruitment.registry.model.Customer;
+import de.leonardo.guavaPlayground.registry.api.CuisinesRegistry;
+import de.leonardo.guavaPlayground.registry.model.Cuisine;
+import de.leonardo.guavaPlayground.registry.model.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
-public class InMemoryCuisinesRegistry implements CuisinesRegistry {
+public class CuisiniesRegistry implements CuisinesRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(InMemoryCuisinesRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(CuisiniesRegistry.class);
     private final Multimap<Cuisine, Customer> cuisineCustomerMultimap = Multimaps
             .synchronizedSetMultimap(HashMultimap.create());
 
     /**
      * This method register an Entry to the Multimap<Cuisine, Customer>:
      * it is not necessary to populate empty collection before the pull()
-     * null values are accepted and handled in the get()
+     * NULL values are accepted and handled in the get()
      * as it is a synchronizedSetMultimap is thread-safe and skips duplicated
      * @param customer Customer object to add
      * @param cuisine  Cuisine object to add
@@ -35,11 +35,9 @@ public class InMemoryCuisinesRegistry implements CuisinesRegistry {
     @Override
     public List<Customer> cuisineCustomers( final Cuisine cuisine) {
 
-        ImmutableList<Customer> customerList = ImmutableMultimap.copyOf(cuisineCustomerMultimap)
+        return ImmutableMultimap.copyOf(cuisineCustomerMultimap)
                 .get(cuisine)
                 .asList();
-
-        return customerList;
 
     }
 
@@ -51,12 +49,10 @@ public class InMemoryCuisinesRegistry implements CuisinesRegistry {
     @Override
     public List<Cuisine> customerCuisines(final Customer customer) {
 
-        ImmutableList<Cuisine> cuisineList= ImmutableMultimap.copyOf(cuisineCustomerMultimap)
+        return ImmutableMultimap.copyOf(cuisineCustomerMultimap)
                 .inverse()
                 .get(customer)
                 .asList();
-
-        return cuisineList;
     }
 
     /**
